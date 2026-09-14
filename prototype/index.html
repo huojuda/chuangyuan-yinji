@@ -47,6 +47,11 @@ section{padding:92px 0;position:relative}
 .nav-links{display:flex;gap:4px;margin-left:auto}
 .nav-links a{font-size:14px;color:var(--muted);padding:8px 14px;border-radius:10px;transition:.2s}
 .nav-links a:hover{color:var(--text);background:rgba(140,200,240,.10)}
+.nav-links a.active{color:var(--cyan);background:rgba(34,211,238,.10)}
+.back-top{position:fixed;right:26px;bottom:100px;z-index:150;width:42px;height:42px;border-radius:12px;background:rgba(8,22,38,.92);border:1px solid var(--line2);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;backdrop-filter:blur(8px)}
+.back-top.show{opacity:1;transform:none;pointer-events:auto}
+.back-top:hover{color:var(--cyan);border-color:var(--cyan);transform:translateY(-2px)}
+.back-top svg{width:18px;height:18px}
 .nav-cta{flex:none}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -103,6 +108,10 @@ section{padding:92px 0;position:relative}
 textarea{width:100%;min-height:120px;resize:vertical;background:#081426;border:1px solid var(--line2);border-radius:12px;color:var(--text);padding:14px;font-family:inherit;font-size:14px;line-height:1.6;outline:none;transition:.2s}
 textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.14)}
 .presets{display:flex;flex-wrap:wrap;gap:8px}
+.creator-row{display:flex;align-items:center;gap:10px}
+.creator-row label{font-size:12px;color:var(--muted);white-space:nowrap}
+.creator-row input{flex:1;background:#081426;border:1px solid var(--line2);border-radius:10px;color:var(--text);padding:9px 12px;font-family:inherit;font-size:13px;outline:none;transition:.2s}
+.creator-row input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.14)}
 .preset{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:6px 12px;border-radius:999px;transition:.2s;background:none}
 .preset:hover{color:var(--cyan);border-color:var(--cyan)}
 .preset.active{color:#04121F;background:var(--grad);border-color:transparent;font-weight:700}
@@ -181,12 +190,20 @@ svg{stroke:currentColor}
 .ratio-mini .ai{color:var(--amber)}
 .contrib{display:flex;flex-direction:column;gap:14px;margin-top:20px}
 .contrib-bar{display:flex;height:26px;border-radius:8px;overflow:hidden;font-size:12px;font-weight:800}
-.contrib-bar i{display:flex;align-items:center;justify-content:center;color:#04121F;transition:flex-grow 1s cubic-bezier(.2,.7,.2,1)}
+.contrib-bar i{display:flex;align-items:center;justify-content:center;color:#04121F;width:0;transition:width 1.2s cubic-bezier(.2,.7,.2,1);white-space:nowrap;overflow:hidden}
+.contrib-bar.show .c-human{width:62%}
+.contrib-bar.show .c-ai{width:38%}
 .contrib-bar .c-human{background:linear-gradient(90deg,#22D3EE,#38BDF8)}
 .contrib-bar .c-ai{background:linear-gradient(90deg,#FBBF24,#F59E0B)}
 .contrib .legend{display:flex;gap:18px;font-size:12px;color:var(--muted)}
 .contrib .legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:6px}
 .rule-note{font-size:12px;color:var(--faint);margin-top:12px;display:flex;align-items:center;gap:8px}
+.tl-row{cursor:pointer;transition:.2s}
+.tl-row:hover .tl-body h5{color:var(--cyan)}
+.tl-detail{display:none;margin-top:10px;padding:12px 14px;background:rgba(8,20,36,.6);border:1px solid var(--line);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.8}
+.tl-row.open .tl-detail{display:block}
+.tl-detail b{color:var(--text);font-weight:600}
+.tl-detail .tag{display:inline-block;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--cyan);font-size:11px;padding:2px 8px;border-radius:5px;margin-right:6px;margin-top:4px}
 
 /* ===== 验证 ===== */
 .verify-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
@@ -220,7 +237,10 @@ svg{stroke:currentColor}
 .report-cell b{font-size:15px;display:block;word-break:break-all}
 .report-cell b.cyan{color:var(--cyan)}
 .report-cell b.green{color:var(--green)}
-.report-foot{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:12px;color:var(--faint)}
+.report-foot{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:12px;color:var(--faint);flex-wrap:wrap}
+.report-download{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.4);color:var(--teal);font-size:12px;font-weight:700;transition:.2s;white-space:nowrap}
+.report-download:hover{background:rgba(45,212,191,.2);transform:translateY(-1px)}
+.report-download svg{width:14px;height:14px}
 .report-file{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);background:rgba(8,20,36,.6);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:14px}
 .report-file svg{width:16px;height:16px;stroke:var(--cyan);flex:none}
 .report-file b{color:var(--text);font-weight:600}
@@ -419,6 +439,10 @@ svg{stroke:currentColor}
       <div class="card panel">
         <div class="panel-title"><span class="step-no">1</span>创作台 · 输入你的创意</div>
         <textarea id="promptInput" placeholder="描述你想创作的内容，例如：为一座城市的清晨写一首短诗……"></textarea>
+        <div class="creator-row">
+          <label>创作者</label>
+          <input type="text" id="creatorName" placeholder="输入你的名字或工作室名（可选）" value="远山">
+        </div>
         <div class="presets">
           <button class="preset" data-p="为一座城市清晨的日出，写一首富有画面感的短诗，意象清新，略带希望感。">短诗 · 城市日出</button>
           <button class="preset" data-p="为一款主打环保的新品牌设计一张发布海报的视觉方案，突出自然与科技共生。">海报 · 环保新品牌</button>
@@ -468,13 +492,14 @@ svg{stroke:currentColor}
           </div>
         </div>
         <div class="result-card" id="resultCard">
-          <h4><svg width="18" height="18" style="stroke:var(--cyan)"><use href="#check" xlink:href="#check"/></svg>生成完成 · 作品已确权</h4>
+          <h4 id="resultTitle"><svg width="18" height="18" style="stroke:var(--cyan)"><use href="#check" xlink:href="#check"/></svg>生成完成 · 作品已确权</h4>
           <div class="result-text" id="resultText"></div>
           <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
             <span class="fp-badge">已嵌入原生指纹</span>
             <span class="demo-tag">演示作品</span>
           </div>
           <div class="result-actions">
+            <button class="btn btn-ghost btn-sm" onclick="runGeneration()"><svg width="14" height="14" style="margin-right:4px"><use href="#bot" xlink:href="#bot"/></svg>重新生成</button>
             <button class="btn btn-ghost btn-sm" onclick="gotoTrace()">查看过程溯源<svg width="14" height="14" style="margin-left:4px"><use href="#arrow" xlink:href="#arrow"/></svg></button>
             <button class="btn btn-primary btn-sm" onclick="gotoVerify()">去一键验证</button>
           </div>
@@ -494,9 +519,9 @@ svg{stroke:currentColor}
     </div>
     <div class="trace-grid">
       <div class="card trace-card">
-        <h3>作品 ·《城市醒来》</h3>
-        <p class="t-sub">短诗 · 演示作品 · 指纹 ID IM-9F3A-27C8-04DE</p>
-        <div class="result-text" style="border-left:3px solid var(--teal);padding-left:14px;font-size:14px;color:#D6E8FA;line-height:2">晨光爬上东方的楼群，<br>把梦还给每一扇窗。<br>风从江面醒来，<br>推着城市，轻轻出发。</div>
+        <h3 id="traceTitle">作品 ·《城市醒来》</h3>
+        <p class="t-sub" id="traceSub">短诗 · 演示作品 · 指纹 ID IM-9F3A-27C8-04DE</p>
+        <div class="result-text" id="traceText" style="border-left:3px solid var(--teal);padding-left:14px;font-size:14px;color:#D6E8FA;line-height:2">晨光爬上东方的楼群，<br>把梦还给每一扇窗。<br>风从江面醒来，<br>推着城市，轻轻出发。</div>
         <div class="rule-note"><svg width="14" height="14" style="stroke:var(--faint)"><use href="#clock" xlink:href="#clock"/></svg>溯源规则可配置：贡献权重由创作者与平台共同定义</div>
       </div>
       <div class="card trace-card">
@@ -506,34 +531,34 @@ svg{stroke:currentColor}
           <div class="tl-row">
             <div class="tl-time">T1<br>构思</div>
             <div class="tl-axis"><div class="tl-dot"></div></div>
-            <div class="tl-body"><h5>创意构思 <span class="ratio-mini"><span class="human">人 90%</span> / <span class="ai">AI 10%</span></span></h5><p>提出主题与立意：以城市清晨的苏醒为意象</p></div>
+            <div class="tl-body"><h5>创意构思 <span class="ratio-mini"><span class="human">人 90%</span> / <span class="ai">AI 10%</span></span></h5><p>提出主题与立意：以城市清晨的苏醒为意象</p><div class="tl-detail"><b>决策详情：</b>创作者提出核心主题与情感基调，AI 仅提供关键词联想与参考素材建议。<br><span class="tag">人主导</span><span class="tag">主题独创性</span><br><b>贡献依据：</b>主题与立意的独创性由创作者完全主导，AI 仅做辅助联想。</div></div>
           </div>
           <div class="tl-row">
             <div class="tl-time">T2<br>转译</div>
             <div class="tl-axis"><div class="tl-dot"></div></div>
-            <div class="tl-body"><h5>提示词工程 <span class="ratio-mini"><span class="human">人 70%</span> / <span class="ai">AI 30%</span></span></h5><p>将创作意图转译为高质量生成指令</p></div>
+            <div class="tl-body"><h5>提示词工程 <span class="ratio-mini"><span class="human">人 70%</span> / <span class="ai">AI 30%</span></span></h5><p>将创作意图转译为高质量生成指令</p><div class="tl-detail"><b>决策详情：</b>创作者将模糊意图转译为结构化生成指令（风格/意象/节奏/约束），AI 辅助优化指令措辞与参数建议。<br><span class="tag">人机协作</span><span class="tag">指令工程</span><br><b>贡献依据：</b>指令质量直接决定生成方向，创作者的转译能力是核心。</div></div>
           </div>
           <div class="tl-row">
             <div class="tl-time">T3<br>定向</div>
             <div class="tl-axis"><div class="tl-dot"></div></div>
-            <div class="tl-body"><h5>风格定向 <span class="ratio-mini"><span class="human">人 45%</span> / <span class="ai">AI 55%</span></span></h5><p>选择风格参考、意象参数与语言节奏</p></div>
+            <div class="tl-body"><h5>风格定向 <span class="ratio-mini"><span class="human">人 45%</span> / <span class="ai">AI 55%</span></span></h5><p>选择风格参考、意象参数与语言节奏</p><div class="tl-detail"><b>决策详情：</b>AI 基于主题推荐 3 套风格参考与意象参数组合，创作者筛选并调整风格搭配与语言节奏。<br><span class="tag">AI推荐</span><span class="tag">人筛选</span><br><b>贡献依据：</b>风格选择由 AI 推荐与人筛选共同决策，AI 占比略高。</div></div>
           </div>
           <div class="tl-row">
             <div class="tl-time">T4<br>迭代</div>
             <div class="tl-axis"><div class="tl-dot"></div></div>
-            <div class="tl-body"><h5>生成迭代 <span class="ratio-mini"><span class="human">人 25%</span> / <span class="ai">AI 75%</span></span></h5><p>多轮生成、筛选与局部重写（3轮）</p></div>
+            <div class="tl-body"><h5>生成迭代 <span class="ratio-mini"><span class="human">人 25%</span> / <span class="ai">AI 75%</span></span></h5><p>多轮生成、筛选与局部重写（3轮）</p><div class="tl-detail"><b>决策详情：</b>AI 执行 3 轮生成与局部重写，每轮输出 2-3 个候选；创作者筛选保留方向、提出修改意见（如"第二段更柔和"）。<br><span class="tag">AI执行</span><span class="tag">人筛选</span><br><b>贡献依据：</b>生成执行由 AI 主导，但筛选与方向把控由创作者决定。</div></div>
           </div>
           <div class="tl-row">
             <div class="tl-time">T5<br>定稿</div>
             <div class="tl-axis"><div class="tl-dot"></div></div>
-            <div class="tl-body"><h5>成稿确认 <span class="ratio-mini"><span class="human">人 85%</span> / <span class="ai">AI 15%</span></span></h5><p>人工取舍、微调与最终确认发布</p></div>
+            <div class="tl-body"><h5>成稿确认 <span class="ratio-mini"><span class="human">人 85%</span> / <span class="ai">AI 15%</span></span></h5><p>人工取舍、微调与最终确认发布</p><div class="tl-detail"><b>决策详情：</b>创作者对最终成稿进行取舍、微调节奏与用词，并确认发布；AI 提供格式优化、一致性检查与指纹嵌入确认。<br><span class="tag">人主导</span><span class="tag">最终决定权</span><br><b>贡献依据：</b>最终发布决定权完全在创作者，AI 仅做辅助检查。</div></div>
           </div>
         </div>
         <div class="contrib">
           <div class="legend"><span><i class="c-human" style="display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:linear-gradient(90deg,#22D3EE,#38BDF8)"></i>创作者贡献 62%</span><span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:linear-gradient(90deg,#FBBF24,#F59E0B)"></i>AI贡献 38%</span></div>
-          <div class="contrib-bar">
-            <i class="c-human" style="flex:0 0 62%">创作者 62%</i>
-            <i class="c-ai" style="flex:0 0 38%">AI 38%</i>
+          <div class="contrib-bar" id="contribBar">
+            <i class="c-human">创作者 62%</i>
+            <i class="c-ai">AI 38%</i>
           </div>
         </div>
       </div>
@@ -608,6 +633,7 @@ svg{stroke:currentColor}
           <div class="report-foot">
             <svg width="16" height="16" style="stroke:var(--teal)"><use href="#finger" xlink:href="#finger"/></svg>
             <span>确权凭证 <b class="mono" style="color:var(--teal)" id="rCert">CY-2026-0912-8842</b> · 指纹与原作内容绑定，可跨平台核验</span>
+            <button class="report-download" onclick="downloadCert()"><svg width="14" height="14"><use href="#file" xlink:href="#file"/></svg>下载确权凭证</button>
           </div>
         </div>
       </div>
@@ -694,6 +720,7 @@ svg{stroke:currentColor}
 
 <!-- Toast & 自动演示 -->
 <div class="toast" id="toast"></div>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <div class="demo-float">
   <button class="demo-btn" id="tourBtn" onclick="toggleTour()"><svg width="15" height="15"><use href="#play" xlink:href="#play"/></svg>自动演示全流程</button>
   <span class="demo-tip">约60秒 · 自动走完核心功能</span>
@@ -730,9 +757,11 @@ document.querySelectorAll('.preset').forEach(function(b,idx){
 });
 var fpIdPool=['IM-9F3A-27C8-04DE','IM-7B21-44DA-9E07','IM-C882-10E5-3FA1','IM-5D64-98B0-7C33','IM-E9A7-23F1-88B4'];
 var genRunning=false;
+var currentCreator='远山',currentFpId='IM-9F3A-27C8-04DE',currentWorkType='短诗';
 function runGeneration(){
   if(genRunning)return;genRunning=true;
   var p=document.getElementById('promptInput').value.trim();
+  currentCreator=document.getElementById('creatorName').value.trim()||'匿名创作者';
   var empty=document.getElementById('canvasEmpty'),stage=document.getElementById('genStage');
   empty.style.display='none';stage.style.display='block';
   var fps=document.getElementById('fpStage');fps.classList.remove('show','embedding','embedded');
@@ -760,6 +789,8 @@ function runGeneration(){
 }
 function showFingerprint(idx){
   document.getElementById('fpId').textContent=fpIdPool[idx];
+  currentFpId=fpIdPool[idx];
+  currentWorkType=['短诗','视觉方案','广告文案'][idx]||'作品';
   var now=new Date();
   document.getElementById('fpTime').textContent=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
   var s=document.getElementById('fpStage');s.classList.remove('embedded');s.classList.add('show','embedding');
@@ -767,14 +798,62 @@ function showFingerprint(idx){
   setTimeout(function(){s.classList.remove('embedding');s.classList.add('embedded');document.getElementById('fpStatusText').textContent='嵌入完成 · 指纹已与内容绑定';},1200);
   setTimeout(function(){
     document.getElementById('resultText').textContent=SAMPLE_TEXT[idx];
+    document.getElementById('resultTitle').innerHTML='<svg width="18" height="18" style="stroke:var(--cyan)"><use href="#check" xlink:href="#check"/></svg>生成完成 ·「'+currentCreator+'」的作品已确权';
     document.getElementById('resultCard').classList.add('show');
     genRunning=false;
     toast('生成完成 · 原生指纹已嵌入作品');
+    updateTrace(idx);
   },1750);
 }
 
+function updateTrace(idx){
+  var titles=['城市醒来','新禾环保','星环手表'];
+  var title=titles[idx]||'AI创作作品';
+  document.getElementById('traceTitle').textContent='作品 ·《'+title+'》';
+  document.getElementById('traceSub').textContent=currentWorkType+' · 创作者「'+currentCreator+'」 · 指纹 ID '+currentFpId;
+  document.getElementById('traceText').innerHTML=SAMPLE_TEXT[idx].replace(/\n/g,'<br>');
+}
+
+/* ===== 溯源区动画与交互 ===== */
+(function(){
+  if('IntersectionObserver' in window){
+    var ob=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          document.getElementById('contribBar').classList.add('show');
+          ob.unobserve(en.target);
+        }
+      });
+    },{threshold:0.25});
+    var t=document.getElementById('trace');
+    if(t)ob.observe(t);
+  }else{
+    document.getElementById('contribBar').classList.add('show');
+  }
+})();
+document.querySelectorAll('.tl-row').forEach(function(row){
+  row.addEventListener('click',function(){row.classList.toggle('open');});
+});
+
+/* ===== 导航滚动高亮 + 回到顶部 ===== */
+(function(){
+  var secs=['arch','create','trace','verify','compare','value'];
+  var links=document.querySelectorAll('.nav-links a');
+  var backTop=document.getElementById('backTop');
+  function onScroll(){
+    var y=window.scrollY||window.pageYOffset;
+    if(backTop){if(y>400)backTop.classList.add('show');else backTop.classList.remove('show');}
+    var cur='';
+    secs.forEach(function(id){var el=document.getElementById(id);if(el&&el.offsetTop-220<=y)cur=id;});
+    links.forEach(function(a){a.classList.remove('active');if(a.getAttribute('href')==='#'+cur)a.classList.add('active');});
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+})();
+
 /* ===== 一键验证 ===== */
 var curSample=0;
+var currentReport=null;
 var uploadedFile=null;
 var UPLOAD_OWNERS=['创作者「墨白」','创作者「星野」','创作者「林深」','创作者「苏屿」','创作者「陈昼」','创作者「知秋」','创作者「白鹭」','创作者「青崖」'];
 function fnv1a(buf){var h=0x811c9dc5;var v=new Uint8Array(buf);for(var i=0;i<v.length;i++){h^=v[i];h=Math.imul(h,0x01000193);}return (h>>>0).toString(16).toUpperCase().padStart(8,'0');}
@@ -872,6 +951,52 @@ function finish(){
   document.getElementById('report').classList.add('show');
   document.getElementById('verifyEmpty').style.display='none';
   toast('核验完成 · 确权报告已生成');
+  var fpIds=['IM-9F3A-27C8-04DE','IM-7B21-44DA-9E07','IM-C882-10E5-3FA1'];
+  currentReport={owner:r.owner,oid:r.oid,time:r.time,sim:r.sim,cert:r.cert,fpId:curSample===-1?uploadedFile.fpId:fpIds[curSample]||fpIds[0],fileName:curSample===-1?uploadedFile.name:null,fileMeta:curSample===-1?(typeLabel(uploadedFile.type)+' · '+formatSize(uploadedFile.size)):null};
+}
+
+function downloadCert(){
+  if(!currentReport){toast('请先完成一键验证');return;}
+  var r=currentReport;
+  var now=new Date();
+  var vt=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  var fileRow=r.fileName?'<tr><th>核验对象</th><td>'+r.fileName+'（'+r.fileMeta+'）</td></tr>':'';
+  var html='<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>创源印记 · 确权凭证 '+r.cert+'</title>'
+    +'<style>body{margin:0;font-family:"Segoe UI","Microsoft YaHei",sans-serif;background:#050B14;color:#E8F2FF;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}'
+    +'.cert{max-width:560px;width:100%;background:linear-gradient(180deg,#0D1F35,#0A1626);border:1px solid rgba(34,211,238,.3);border-radius:20px;padding:36px 32px;box-shadow:0 20px 60px rgba(2,10,20,.6)}'
+    +'.cert-head{text-align:center;border-bottom:1px solid rgba(130,190,225,.15);padding-bottom:20px;margin-bottom:24px}'
+    +'.cert-head h1{font-size:22px;margin:8px 0 4px;background:linear-gradient(135deg,#22D3EE,#2DD4BF);-webkit-background-clip:text;background-clip:text;color:transparent}'
+    +'.cert-head .sub{font-size:12px;color:#8FA9C4;letter-spacing:2px}'
+    +'.cert-id{font-family:Consolas,monospace;font-size:20px;color:#2DD4BF;text-align:center;margin-bottom:24px;letter-spacing:1px}'
+    +'.cert-table{width:100%;border-collapse:collapse;font-size:14px}'
+    +'.cert-table th{text-align:left;color:#8FA9C4;font-weight:600;padding:10px 8px;border-bottom:1px solid rgba(130,190,225,.1);width:120px}'
+    +'.cert-table td{padding:10px 8px;border-bottom:1px solid rgba(130,190,225,.1);word-break:break-all}'
+    +'.cert-table td b{color:#22D3EE}'
+    +'.pass{color:#34D399;font-weight:700}'
+    +'.cert-foot{margin-top:24px;padding-top:18px;border-top:1px solid rgba(130,190,225,.15);text-align:center;font-size:11px;color:#5C7694;line-height:1.8}'
+    +'.cert-foot a{color:#22D3EE;text-decoration:none}'
+    +'.fp-icon{width:48px;height:48px;margin:0 auto 8px;display:block}'
+    +'</style></head><body><div class="cert">'
+    +'<div class="cert-head"><svg class="fp-icon" viewBox="0 0 120 120" fill="none" stroke="#22D3EE" stroke-width="4" stroke-linecap="round"><path d="M60 12 C38 12 24 28 24 51 C24 74 38 89 60 89 C82 89 96 74 96 51 C96 36 87 24 72 19"/><path d="M60 24 C46 24 36 35 36 50 C36 66 46 76 60 76 C74 76 84 66 84 50 C84 40 77 31 66 28"/><path d="M60 36 C53 36 47 43 47 50 C47 58 53 64 60 64 C67 64 73 58 73 50 C73 46 70 42 66 40"/></svg>'
+    +'<h1>创源印记 · 数字确权凭证</h1><div class="sub">AI原生创作全链路数字指纹确权体系</div></div>'
+    +'<div class="cert-id">凭证编号 '+r.cert+'</div>'
+    +'<table class="cert-table">'
+    +'<tr><th>创作者身份</th><td><b>'+r.owner+'</b><br><span style="font-size:11px;color:#5C7694">'+r.oid+'</span></td></tr>'
+    +'<tr><th>原生指纹ID</th><td style="font-family:Consolas,monospace;color:#22D3EE">'+r.fpId+'</td></tr>'
+    +'<tr><th>生成时间</th><td>'+r.time+'</td></tr>'
+    +'<tr><th>核验时间</th><td>'+vt+'</td></tr>'
+    +'<tr><th>原创性核验</th><td><span class="pass">通过</span> · 与既有作品最高相似度 '+r.sim+'</td></tr>'
+    +fileRow
+    +'</table>'
+    +'<div class="cert-foot">本凭证由创源印记智能验证网络生成，指纹与原作内容绑定，可跨平台核验<br>验证入口：<a href="https://huojuda.github.io/chuangyuan-yinji/">https://huojuda.github.io/chuangyuan-yinji/</a><br>本凭证为概念验证原型生成，不具备法律效力</div>'
+    +'</div></body></html>';
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='创源印记-确权凭证-'+r.cert+'.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  toast('确权凭证已下载');
 }
 
 /* ===== 自动演示 ===== */
