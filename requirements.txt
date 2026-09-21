@@ -1,0 +1,2 @@
+# 创源印记 Serverless 函数仅使用 Python 标准库，无需第三方依赖。
+# 本地服务器 server/app.py 同样零依赖（Python 3.8+）。
