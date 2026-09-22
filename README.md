@@ -9,14 +9,15 @@
 
 > **v5 升级要点**：原型已从「纯前端动画 Demo」升级为 **前后端分离的真实可运行系统**——接入 DeepSeek 大模型**真实生成**作品，浏览器本地以 **SHA-256 真实计算**内容指纹，上传文件做**逐位哈希比对**，人机贡献度随真实创作数据**动态计算**；并新增未来愿景、技术原理（含抗攻击）、C2PA 四维对比、立场与伦理四大板块。
 
-## 三种运行方式
+## 运行方式
 
 | 方式 | 真实 AI 生成 | SHA-256 指纹 / 验证 | 说明 |
 | --- | --- | --- | --- |
-| **在线演示**（GitHub Pages） | 降级为内置示例文案 | ✅ 完全真实 | https://huojuda.github.io/chuangyuan-yinji/ ，静态托管无法安全存放密钥 |
-| **本地服务器**（推荐评审） | ✅ DeepSeek 真实生成 | ✅ 完全真实 | 见下方「本地运行」，约 1.5s 返回真实作品 |
-| **Vercel 一键部署** | ✅ DeepSeek 真实生成 | ✅ 完全真实 | 见 `server/README.md`，密钥配在环境变量 |
-| 直接双击 `index.html` | 降级为内置示例文案 | ✅ 完全真实 | 无需联网即可体验指纹与验证闭环 |
+| **在线演示**（EdgeOne Makers，推荐） | ✅ DeepSeek 真实生成 | ✅ 完全真实 | 静态前端 + `/api/generate` 边缘函数同源部署，密钥在边缘函数环境变量 |
+| **本地服务器** | ✅ DeepSeek 真实生成 | ✅ 完全真实 | 见下方「本地运行」，约 1.5s 返回真实作品 |
+| **GitHub Pages** | 降级为内置示例文案 | ✅ 完全真实 | 纯静态托管，无法安全存放密钥，AI 自动降级 |
+| Vercel 一键部署（备用） | ✅ DeepSeek 真实生成 | ✅ 完全真实 | 见 `server/README.md`，密钥配在环境变量 |
+| 直接双击 `web/index.html` | 降级为内置示例文案 | ✅ 完全真实 | 无需联网即可体验指纹与验证闭环 |
 
 > 说明：AI 生成在未连接后端时自动降级为内置演示文案，但**指纹计算、确权登记、上传比对全流程始终真实**——同一份文件原样上传验证通过，改动一个字即判定「未登记」。
 
@@ -29,21 +30,34 @@ python app.py                          # Python 3.8+，无需 pip install
 # 浏览器打开 http://localhost:8090
 ```
 
-Vercel Serverless 版本见 `api/generate.py` 与 `vercel.json`，在 Vercel 控制台配置环境变量 `DEEPSEEK_API_KEY` 即可。
+## 部署架构（前后端分离）
 
-## 仓库结构
+线上采用 **EdgeOne Makers**，一个项目内前后端职责分离：`web/` 只承载静态前端并作为站点根，
+`edge-functions/` 承载全部后端逻辑（独立运行在 V8 边缘隔离环境），密钥只存在于边缘函数环境变量，前端不含任何密钥。
 
-| 路径 | 内容 |
-| --- | --- |
-| `prototype/index.html` | 可交互产品原型（前端单文件，Web Crypto 计算 SHA-256） |
-| `docs/index.html` | GitHub Pages 在线演示副本（与 prototype 内容一致） |
-| `server/app.py` | 本地零依赖服务器：静态托管 + `/api/generate` 代理 DeepSeek |
-| `api/generate.py` | Vercel Serverless 函数（同一接口契约） |
-| `vercel.json` / `requirements.txt` | Vercel 部署配置 / 依赖声明（零第三方依赖） |
-| `server/README.md` | 本地运行与 Vercel 部署详细说明 |
-| `docs/创源印记-创作说明.pdf` | 创作说明文档（正文 ≤500 字） |
-| `video/创源印记-演示视频.mp4` | 演示视频（1080P，≤60 秒，含 AI 旁白） |
-| `SUBMISSION.md` | 参赛提交清单与注意事项 |
+```
+仓库根（= EdgeOne 构建根目录）
+├── web/                          ← 站点根（静态前端，outputDirectory）
+│   └── index.html                  单文件应用，Web Crypto 计算 SHA-256
+├── edge-functions/               ← 后端（边缘函数，按路径自动生成路由）
+│   └── api/generate.js             POST /api/generate · GET = 健康探针
+├── edgeone.json                     构建配置：outputDirectory = "web"
+├── api/generate.py · vercel.json    Vercel Serverless 备用后端（同一接口契约）
+├── server/app.py                    本地零依赖服务器：托管 web/ + 代理 DeepSeek
+├── docs/创源印记-创作说明.pdf        创作说明文档（正文 ≤500 字）
+└── video/创源印记-演示视频.mp4        演示视频（1080P，≤60 秒，含 AI 旁白）
+```
+
+**EdgeOne Makers 部署要点**
+
+1. 控制台 → Makers → 从 Git 仓库导入 `huojuda/chuangyuan-yinji`，分支 `main`；
+2. 构建设置：**根目录**留空（仓库根）、**构建命令**留空、**输出目录**填 `web`（已由 `edgeone.json` 声明）；
+3. 项目设置 → 环境变量（生产环境）配置 `DEEPSEEK_API_KEY`（建议加密类型），可选 `DEEPSEEK_MODEL`、`ALLOW_ORIGINS`；
+4. 之后 **push 到 main 即自动构建部署**，无需控制台操作。
+
+**边缘函数约束备忘**：目录名必须是 `edge-functions/`（不是 `functions/`）；handler 为 `export default function onRequest(context)`；
+运行在 V8 隔离环境，可用 Web 标准 API（`fetch` / `crypto.subtle` / `TextEncoder`），**不可用** `require`/`process`/`fs`/npm 依赖；
+`context.env` 是环境变量入口；路由大小写敏感；**静态资源优先于函数路由**——若函数未注册成功，`/api/*` 会静默回落到静态页面并返回 HTML，故用 `GET /api/generate` 探针判定是否返回 JSON。
 
 ## 核心功能（均可真实操作）
 
@@ -70,6 +84,6 @@ Vercel Serverless 版本见 `api/generate.py` 与 `vercel.json`，在 Vercel 控
 
 ## 安全说明
 
-DeepSeek 密钥仅保存在服务端环境变量 `DEEPSEEK_API_KEY` 中，前端不含任何密钥；前端通过同源 `/api/generate` 调用。验证时文件**仅在浏览器本地计算哈希，不上传文件内容**。
+DeepSeek 密钥仅保存在服务端环境变量 `DEEPSEEK_API_KEY` 中（本地为进程环境变量，线上为边缘函数环境变量），前端不含任何密钥；前端通过同源 `/api/generate` 调用。验证时文件**仅在浏览器本地计算哈希，不上传文件内容**。
 
 > 本作品仅参加「AI 奇点」赛道。鲁棒隐写、跨模态语义核验与多节点共识网络为面向生产环境的技术设计，当前以可交互原型演示其完整闭环与产品形态。

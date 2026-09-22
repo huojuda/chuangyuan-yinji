@@ -1328,10 +1328,16 @@ async function testEngine(silent){
   var base=getApiBase();
   try{
     var ctrl=new AbortController();var to=setTimeout(function(){ctrl.abort();},3500);
-    await fetch(base+'/api/generate',{method:'OPTIONS',signal:ctrl.signal});
+    var resp=await fetch(base+'/api/generate',{method:'GET',signal:ctrl.signal});
     clearTimeout(to);
+    // 关键：必须校验对方真的返回了 JSON。否则静态页面被回退命中（404/HTML）也会被误判成「后端已连通」。
+    var ctype=resp.headers.get('content-type')||'';
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    if(ctype.indexOf('application/json')<0)throw new Error('未返回 JSON');
+    var data=await resp.json();
+    if(!data||data.ok!==true)throw new Error('响应异常');
     engineOnline=true;setEngineUI(true,'DeepSeek');
-    if(!silent)toast('后端连接正常 · 真实AI可用');
+    if(!silent)toast(data.key_configured?'后端连接正常 · 真实AI可用':'后端已连通，但服务端尚未配置 DEEPSEEK_API_KEY');
     return true;
   }catch(e){
     engineOnline=false;setEngineUI(false);

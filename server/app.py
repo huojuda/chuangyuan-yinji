@@ -33,9 +33,9 @@ DEEPSEEK_ENDPOINT = os.environ.get(
 )
 DEEPSEEK_MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat")
 
-# 前端静态目录（../prototype）
+# 前端静态目录（../web —— 与 EdgeOne 线上站点根保持一致，单一前端源）
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.normpath(os.path.join(BASE_DIR, "..", "prototype"))
+STATIC_DIR = os.path.normpath(os.path.join(BASE_DIR, "..", "web"))
 
 SYSTEM_PROMPT = (
     "你是「创源印记」AI 原生创作确权体系中的创作引擎。用户会给出一个创作意图，"
@@ -115,6 +115,17 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self._send_json(204, {})
+
+    def do_GET(self):
+        """/api/generate 健康探针，与线上 EdgeOne 边缘函数保持同一接口契约。"""
+        if self.path.split("?")[0].rstrip("/") != "/api/generate":
+            return super().do_GET()
+        self._send_json(200, {
+            "ok": True,
+            "service": "chuangyuan-yinji / api/generate",
+            "runtime": "local-python",
+            "key_configured": bool(DEEPSEEK_API_KEY),
+        })
 
     def do_POST(self):
         if self.path.split("?")[0].rstrip("/") != "/api/generate":
